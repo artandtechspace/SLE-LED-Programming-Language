@@ -1,3 +1,9 @@
-boolean 
-    -> "true"
-    | false
+command
+    -> anweisung ";"
+
+anweisung
+    -> character {% id %}
+    | character anweisung
+        {% (data) => data[0] + data[1] %}
+
+character -> [^;] {% id %}
