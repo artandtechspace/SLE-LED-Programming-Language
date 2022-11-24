@@ -1,1 +1,2 @@
 float test = 4.0f;
+int n = 4;

@@ -1,5 +1,7 @@
+text -> command:* {% id %}
+
 command
-    -> anweisung ";"
+    -> anweisung ";" {% id %}
 
 anweisung
     -> character {% id %}
