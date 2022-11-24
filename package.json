@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "nearley": "^2.20.1"
+  },
+  "name": "sle-led-programming-language",
+  "version": "1.0.0",
+  "main": "main.js",
+  "devDependencies": {},
+  "scripts": {
+    "start": "node run main"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/artandtechspace/SLE-LED-Programming-Language.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/artandtechspace/SLE-LED-Programming-Language/issues"
+  },
+  "homepage": "https://github.com/artandtechspace/SLE-LED-Programming-Language#readme",
+  "description": ""
+}
