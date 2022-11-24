@@ -7,7 +7,7 @@
   "main": "main.js",
   "devDependencies": {},
   "scripts": {
-    "start": "node run main"
+    "start": "node .\\main.js"
   },
   "repository": {
     "type": "git",
