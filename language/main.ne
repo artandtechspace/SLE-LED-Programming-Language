@@ -12,6 +12,11 @@ program
 # Integer Section
 #
 
+# Integer Operator precedence:
+# 1. Unary
+# 2. Multiply / Divide / Modulo
+# 3. Addition / Subtraction
+
 @{%
     function TokenInt(number){
         return {
@@ -67,6 +72,14 @@ program
             name
         }
     }
+
+    function TokenIntVariableAndIncreament(name, operator, before){
+        return {
+            type: "variable_int_incre",
+            operator,
+            before
+        }
+    }
 %}
 
 float_to_int
@@ -83,7 +96,7 @@ additive_int
     |  multiplicative_int  {%id%}
 
 multiplicative_int
-    -> unary_expression_int _ [*/] _ multiplicative_int
+    -> unary_expression_int _ [*/%] _ multiplicative_int
         {%
             ([left, _, operator, _1, right]) => TokenMultiplicativeInt(left, operator, right)
         %}
@@ -112,7 +125,15 @@ func_parameters_int
     | additive_int
 
 variable_int
-    -> var_name
+    -> ("++" | "--") var_name
+        {%
+            ([op,name])=>TokenIntVariableAndIncreament(name, op[0][0], true)
+        %}
+    |  var_name ( "++" | "--" )
+        {%
+            ([name,op])=>TokenIntVariableAndIncreament(name, op[0][0], false)
+        %}
+    |  var_name
         {%
             ([name])=>TokenIntVariable(name)
         %}
@@ -120,6 +141,11 @@ variable_int
 #
 # Float Section
 #
+
+# Float Operator precedence:
+# 1. Unary
+# 2. Multiply / Divide / Modulo
+# 3. Addition / Subtraction
 
 @{%
     function TokenFloat(number){
@@ -176,6 +202,14 @@ variable_int
             name
         }
     }
+
+    function TokenFloatVariableAndIncreament(name, operator, before){
+        return {
+            type: "variable_float_incre",
+            operator,
+            before
+        }
+    }
 %}
 
 int_to_float
@@ -221,7 +255,15 @@ func_parameters_float
     | additive_float
 
 variable_float
-    -> var_name
+    -> ("++" | "--") var_name
+        {%
+            ([op,name])=>TokenFloatVariableAndIncreament(name, op[0][0], true)
+        %}
+    |  var_name ( "++" | "--" )
+        {%
+            ([name,op])=>TokenFloatVariableAndIncreament(name, op[0][0], false)
+        %}
+    |  var_name
         {%
             ([name])=>TokenFloatVariable(name)
         %}
