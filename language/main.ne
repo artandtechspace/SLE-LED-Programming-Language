@@ -14,11 +14,12 @@ program
 
 # Integer Operator precedence:
 # 1. Unary
-# 2. Multiply / Divide / Modulo
-# 3. Addition / Subtraction
-# 4. Binary And
-# 5. Binary XOR
-# 6. Binary OR
+# 2. Negator
+# 3. Multiply / Divide / Modulo
+# 4. Addition / Subtraction
+# 5. Binary And
+# 6. Binary XOR
+# 7. Binary OR
 
 @{%
     function TokenInt(number){
@@ -101,6 +102,13 @@ program
             operator
         }
     }
+
+    function TokenIntInverter(inner){
+        return {
+            type: "int_invert",
+            inner
+        }
+    }
 %}
 
 float_to_int
@@ -146,11 +154,18 @@ additive_int
     |  multiplicative_int  {%id%}
 
 multiplicative_int
-    -> unary_expression_int _ [*/%] _ multiplicative_int
+    -> bin_neg_int _ [*/%] _ multiplicative_int
         {%
             ([left, _, operator, _1, right]) => TokenMultiplicativeInt(left, operator, right)
         %}
-    |  unary_expression_int  {%id%}
+    |  bin_neg_int  {%id%}
+
+bin_neg_int
+    -> "~" _ unary_expression_int
+        {%
+            ([_,_1,inner])=>TokenIntInverter(inner)   
+        %}
+    | unary_expression_int {%id%}
 
 unary_expression_int
     -> simple_int {%id%}
