@@ -5,7 +5,7 @@
 
 program
     -> additive_float {% id %}
-    |  shifted_int {% id %}
+    |  bin_or_int {% id %}
 
 
 #
@@ -16,6 +16,9 @@ program
 # 1. Unary
 # 2. Multiply / Divide / Modulo
 # 3. Addition / Subtraction
+# 4. Binary And
+# 5. Binary XOR
+# 6. Binary OR
 
 @{%
     function TokenInt(number){
@@ -83,10 +86,19 @@ program
 
     function TokenIntShift(left, operator, right){
         return {
-            type: "shift",
+            type: "int_shift",
             operator,
             left,
             right
+        }
+    }
+
+    function TokenIntBinaryOp(left, operator, right){
+        return {
+            type: "int_binop",
+            left,
+            right,
+            operator
         }
     }
 %}
@@ -96,6 +108,27 @@ float_to_int
         {%
             ([value,_])=>TokenFloatToInt(value)
         %}
+
+bin_or_int
+    -> bin_or_int _ "|" _ bin_xor_int
+        {%
+            ([left, _ ,_2, _3, right]) => TokenIntBinaryOp(left, "|", right)
+        %}
+    | bin_xor_int {% id %}
+
+bin_xor_int
+    -> bin_xor_int _ "^" _ bin_and_int
+        {%
+            ([left, _ ,_2, _3, right]) => TokenIntBinaryOp(left, "^", right)
+        %}
+    | bin_and_int {% id %}
+
+bin_and_int
+    -> bin_and_int _ "&" _ shifted_int
+        {%
+            ([left, _ ,_2, _3, right]) => TokenIntBinaryOp(left, "&", right)
+        %}
+    | shifted_int {% id %}
 
 shifted_int
     # Its important that the recursion for shifted_int is on the right side to resolve the expression correctly
