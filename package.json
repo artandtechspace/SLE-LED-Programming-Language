@@ -5,7 +5,6 @@
   "name": "sle-led-programming-language",
   "version": "1.0.0",
   "main": "main.js",
-  "devDependencies": {},
   "scripts": {
     "start": "node main.js",
     "test": "node test.js"

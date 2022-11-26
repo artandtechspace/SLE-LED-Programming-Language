@@ -5,7 +5,7 @@
 
 program
     -> additive_float {% id %}
-    |  additive_int {% id %}
+    |  shifted_int {% id %}
 
 
 #
@@ -80,6 +80,15 @@ program
             before
         }
     }
+
+    function TokenIntShift(left, operator, right){
+        return {
+            type: "shift",
+            operator,
+            left,
+            right
+        }
+    }
 %}
 
 float_to_int
@@ -87,6 +96,14 @@ float_to_int
         {%
             ([value,_])=>TokenFloatToInt(value)
         %}
+
+shifted_int
+    # Its important that the recursion for shifted_int is on the right side to resolve the expression correctly
+    -> shifted_int _ shift_character _ additive_int
+        {%
+            ([left, _, operator, _1, right]) => TokenIntShift(left, operator[0][0], right)
+        %}
+    | additive_int {% id %} 
 
 additive_int
     -> multiplicative_int _ [+-] _ additive_int
@@ -282,6 +299,7 @@ simple_int
 
 
 
+shift_character -> ("<<" | ">>") {%id%}
 
 simple_number
     -> ("+" | "-"):? digits
