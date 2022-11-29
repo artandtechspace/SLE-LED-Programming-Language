@@ -46,13 +46,25 @@ try{
     
     parser.feed(languageInput);
 
-    console.log(parser.results.length);
-    
-    console.log(JSON.stringify(parser.results));
+    if(parser.results.length == 0){
+        console.log("EOF-Error");
+        return;
+    }
 
-    // Checks for multiple resulted parses
-    if(parser.results.length > 1)
-        console.log(`\n\nDetected multiple. ${areAllObjectEqual(parser.results) ? "But they are all equal" : "But they are different!!!"}`);
+    if(parser.results.length > 1){
+        if(areAllObjectEqual(parser.results)){
+            console.log("[INFO] Found multiple parse-results. They are equal though\n");
+        }else{
+            console.log("#####################################################################\nFound multiple parse results that are different\n#####################################################################\n");
+            console.log(JSON.stringify(parser.results));
+            return;
+        }
+    }
+    console.log(JSON.stringify(parser.results[0]));
+    
 }catch(e){
-    console.log(e.message);
+    if(e.message === undefined)
+        console.log(e);
+    else
+        console.log(e.message);
 }

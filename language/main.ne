@@ -22,6 +22,20 @@ program
 # 7. Binary OR
 
 @{%
+    // List with keywords that are illigal for variables etc.
+    const KEYWORDS = [
+        "true", "false", // Boolean operators
+    ]
+
+    function TokenError(errorType, from, length){
+        return {
+            type: "error",
+            error: errorType,
+            from,
+            length
+        }
+    }
+
     function TokenInt(number){
         return {
             type: "int",
@@ -213,7 +227,8 @@ variable_int
 # 3. Addition / Subtraction
 
 @{%
-    function TokenFloat(number){
+
+    function TokenFloat(number) {
         return {
             type: "float",
             value: number
@@ -360,4 +375,13 @@ simple_number
 digits
     -> [0-9]:+ {% data=>data[0].join("") %}
 
-var_name -> [a-zA-Z] [a-zA-Z0-9_]:* {% ([first, other])=>first+other.join("") %}
+var_name -> [a-zA-Z] [a-zA-Z0-9_]:*
+    {% 
+        ([first, other], loc)=>{
+            // Gets the variable-name
+            var name = first+other.join("");
+
+            if(KEYWORDS.includes(name)) return TokenError("keyword_variable", loc, name.length);
+            return name;
+        }
+    %}
